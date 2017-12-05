@@ -11,11 +11,13 @@ def multiply_coords(multiplier, coord2):
 
 
 def counts_generator(number):
-    road = []
-    for i in range(1, number):
-        road.extend([i, i])
-
-    return road[:number - 1]
+    i = 1
+    first = True
+    for _ in range(number - 1):
+        yield i
+        if not first:
+            i += 1
+        first = not first
 
 
 def road_generator(number):
