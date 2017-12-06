@@ -1,6 +1,8 @@
 from functools import reduce
 from itertools import cycle
 
+PUZZLE_INPUT = 361527
+
 
 def versors_generator():
     return cycle(((1, 0), (0, 1), (-1, 0), (0, -1)))
@@ -21,15 +23,19 @@ def counts_generator(number):
 
 
 def road_generator(number):
+    road_count = 1
     versors = versors_generator()
-    road = []
-    for count in counts_generator(number):
+    counts = counts_generator(number)
+    while True:
+        count = next(counts)
         versor = next(versors)
         i = 0
         while i < count:
-            road.append(versor)
+            road_count += 1
+            if road_count > number:
+                return
+            yield versor
             i += 1
-    return road[:number - 1]
 
 
 def get_coordinates(number):
@@ -49,4 +55,4 @@ def get_distance(number):
 
 
 if __name__ == '__main__':
-    print(get_distance(10240))
+    print(get_distance(PUZZLE_INPUT))
