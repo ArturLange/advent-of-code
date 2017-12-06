@@ -15,6 +15,7 @@ def cycle_time(memory_bank):
     count = 0
     state = deepcopy(memory_bank)
     previous_values = [memory_bank]
+    first_cycle_time = 0
     while True:
         print(state, previous_values)
 
@@ -35,7 +36,12 @@ def cycle_time(memory_bank):
         print(state, previous_values)
 
         if state in previous_values:
-            return count
+            if first_cycle_time == 0:
+                first_cycle_time = count
+                count = -1
+                previous_values = deepcopy(state)
+            else:
+                return first_cycle_time, count
         else:
             previous_values.append(deepcopy(state))
 
