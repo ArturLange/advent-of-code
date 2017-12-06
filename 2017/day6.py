@@ -17,7 +17,6 @@ def cycle_time(memory_bank):
     previous_values = [memory_bank]
     first_cycle_time = 0
     while True:
-        print(state, previous_values)
 
         index, value = get_max_and_index(state)
         state[index] = 0
@@ -33,7 +32,6 @@ def cycle_time(memory_bank):
                     value -= 1
                     state[index] += 1
         count += 1
-        print(state, previous_values)
 
         if state in previous_values:
             if first_cycle_time == 0:
