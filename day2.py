@@ -1,16 +1,24 @@
+from itertools import permutations
+
+
 def checksum(spreadsheet):
     sum_ = 0
-    for line in spreadsheet.split('\n'):
-        numbers = [int(number) for number in line.split()]
-        sum_ += max(numbers) - min(numbers)
+    for line in spreadsheet:
+        sum_ += max(line) - min(line)
     return sum_
 
 
-spreadsheet1 = """5 1 9 5
-7 5 3
-2 4 6 8"""
-assert checksum(spreadsheet1) == 18
+def checksum_v2(spreadsheet):
+    sum_ = 0
+    for line in spreadsheet:
+        for a, b in permutations(line, 2):
+            if a % b == 0:
+                sum_ += int(a / b)
+    return sum_
 
-with open('inputs/day2', 'r') as input_file:
-    input_ = input_file.read()
-    print(checksum(input_))
+
+if __name__ == '__main__':
+    with open('inputs/day2', 'r') as input_file:
+        spreadsheet = [[int(x) for x in line.split()] for line in input_file.readlines()]
+        print(checksum(spreadsheet))
+        print(checksum_v2(spreadsheet))
