@@ -16,8 +16,6 @@ class TestDay3(unittest.TestCase):
         assert list(road_generator(2)) == [(1, 0)]
         assert list(road_generator(1)) == []
 
-        a = list(road_generator(25000))
-
     def test_get_coordinates(self):
         assert get_coordinates(1) == (0, 0)
         assert get_coordinates(5) == (-1, 1)
@@ -27,8 +25,6 @@ class TestDay3(unittest.TestCase):
         assert get_distance(12) == 3
         assert get_distance(23) == 2
         assert get_distance(1024) == 31
-
-        # assert get_distance(10240) == 63
 
 
 if __name__ == '__main__':
