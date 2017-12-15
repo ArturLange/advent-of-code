@@ -25,7 +25,7 @@ def get_position(path):
 
 
 def distance(coords1, coords2):
-    return abs(coords1[0] - coords2[0]) + abs(coords1[1] - coords2[1])
+    return ((coords1[0] - coords2[0]) ** 2 + (coords1[1] - coords2[1]) ** 2) ** 0.5
 
 
 def get_path(path):
@@ -45,7 +45,7 @@ def get_path(path):
                     position = add_coords(position, DIRECTIONS['sw'])
                 else:
                     position = add_coords(position, DIRECTIONS['s'])
-            if x < 0 and y > 0:
+            if x < 0 < y:
                 if a <= tan(2 * PI / 3):
                     position = add_coords(position, DIRECTIONS['s'])
                 else:
@@ -55,7 +55,7 @@ def get_path(path):
                     position = add_coords(position, DIRECTIONS['ne'])
                 else:
                     position = add_coords(position, DIRECTIONS['n'])
-            if x > 0 and y < 0:
+            if x > 0 > y:
                 if a <= tan(5 * PI / 3):
                     position = add_coords(position, DIRECTIONS['n'])
                 else:
@@ -64,7 +64,22 @@ def get_path(path):
     return steps
 
 
+def generate_paths(path):
+    for i in range(1, len(path) + 1):
+        yield path[:i]
+
+
+def get_farthest_position(path):
+    farthest_path = []
+    for path_ in generate_paths(path):
+        position = get_position(path_)
+        if distance(position, (0,0)) > 1360:
+            farthest_path.append(path_)
+    return max((get_path(cur_path) for cur_path in farthest_path))
+
+
 if __name__ == '__main__':
     with open('inputs/day11', 'r') as input_file:
         path = input_file.readline().split(',')
         print(get_path(path))
+        print(get_farthest_position(path))
