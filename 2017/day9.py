@@ -7,6 +7,7 @@ class StreamProcess:
         self.stream = stream
         self.ignore_re = re.compile(r'!.')
         self.garbage_re = re.compile(r'<.*?>')
+        self.deleted_garbages = 0
 
     def apply_ignores(self):
         ignores = reversed(list(self.ignore_re.finditer(self.stream)))
@@ -21,6 +22,7 @@ class StreamProcess:
         stream_list = list(self.stream)
         for garbage in garbages:
             span = garbage.span()
+            self.deleted_garbages += span[1] - span[0] - 2
             stream_list[span[0]:] = stream_list[span[1]:]
         self.stream = ''.join(stream_list)
 
@@ -43,4 +45,4 @@ if __name__ == '__main__':
         stream = input_file.readline()
         stream_process = StreamProcess(stream)
         print(stream_process.count_scores())
-        print(stream_process.stream)
+        print(stream_process.deleted_garbages)
