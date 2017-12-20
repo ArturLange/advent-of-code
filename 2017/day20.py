@@ -1,4 +1,5 @@
-from typing import List, Tuple
+from collections import Counter
+from typing import List, Tuple, Union
 
 
 def add_coords(coords1, coords2):
@@ -16,7 +17,7 @@ def get_distance_from_zero(coords):
 class ParticleState:
     def __init__(self, particles_data: List[str]):
         self.particles_data = particles_data
-        self.positions: List[Tuple[int, int, int]] = []
+        self.positions: Union[List[Tuple[int, int, int]], None] = []
         self.velocities: List[Tuple[int, int, int]] = []
         self.accelerations: List[Tuple[int, int, int]] = []
         self.distances: List[int] = []
@@ -31,25 +32,43 @@ class ParticleState:
     def tick(self):
         for i in range(len(self.positions)):
             self.velocities[i] = add_coords(self.velocities[i], self.accelerations[i])
-            self.positions[i] = add_coords(self.positions[i], self.velocities[i])
+            self.positions[i] = add_coords(
+                self.positions[i],
+                self.velocities[i]
+            ) if self.positions[i] is not None else None
 
     def calculate_distances(self):
         for i in range(len(self.positions)):
-            self.distances.append(get_distance_from_zero(self.positions[i]))
+            if self.positions[i] is not None:
+                self.distances.append(get_distance_from_zero(self.positions[i]))
         min_distance = min(self.distances)
         for i in range(len(self.positions)):
             if self.distances[i] == min_distance:
                 return i
 
+    def check_collisions(self):
+        counter = Counter(self.positions)
+        positions_to_delete = []
+        for position in counter:
+            if counter[position] > 1:
+                positions_to_delete.append(position)
+        for i in range(len(self.positions)):
+            if self.positions[i] in positions_to_delete:
+                self.positions[i] = None
+
 
 if __name__ == '__main__':
     with open('inputs/day20', 'r') as input_file:
-        par_state = ParticleState([x.replace('\n', '') for x in input_file.readlines()])
+        particles_data = [x.replace('\n', '') for x in input_file.readlines()]
+        par_state = ParticleState(particles_data)
         par_state.initialize_positions()
-        print(par_state.positions)
-        print(par_state.velocities)
-        print(par_state.accelerations)
         for _ in range(1000):
             par_state.tick()
         print(par_state.calculate_distances())
 
+        par_state = ParticleState(particles_data)
+        par_state.initialize_positions()
+        for _ in range(1000):
+            par_state.tick()
+            par_state.check_collisions()
+        print(len([position for position in par_state.positions if position is not None]))
