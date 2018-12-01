@@ -1,11 +1,11 @@
 from itertools import cycle
 
-sum_ = 0
-with open('day1_input') as input_file:
-    for line in input_file.readlines():
-        sum_ += int(line)
-
-print(sum_)
+def part_1():
+    sum_ = 0
+    with open('day1_input') as input_file:
+        for line in input_file.readlines():
+            sum_ += int(line)
+    return sum_
 
 def part_2():
     sum_ = 0
