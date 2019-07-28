@@ -12,5 +12,17 @@ def part_1():
     print(string_code_len - sum_)
 
 
+def part_2():
+    additional = 0
+    with open('day8input') as input_file:
+        strings = [line.replace('\n', '') for line in input_file.readlines()]
+    for str_ in strings:
+        additional += 2
+        additional += str_.count('"')
+        additional += str_.count('\\')
+    print(additional)
+
+
 if __name__ == "__main__":
     part_1()
+    part_2()
