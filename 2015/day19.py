@@ -1,10 +1,20 @@
 import re
+from itertools import product
+from pprint import pprint
 from typing import List
+
+MOL_RX = re.compile(r'[A-Z][a-z]?')
 
 
 class Molecule:
-    def __init__(self, str_: str):
-        self.list_ = re.findall(r'[A-Z][a-z]?', str_)
+    __slots__ = ['list_', 'str']
+
+    def __init__(self, str_: str, list_=None):
+        if list_ is None:
+            self.list_ = MOL_RX.findall(str_)
+        else:
+            self.list_ = list_
+        self.str = str_
 
     def __len__(self):
         return len(self.list_)
@@ -16,18 +26,28 @@ class Molecule:
         return self.list_ == value.list_
 
     def __hash__(self):
-        return hash(''.join(self.list_))
+        return hash(self.str)
 
     def copy(self):
-        return Molecule(''.join(self.list_))
+        return Molecule(self.str, self.list_)
 
-    def replace(self, index: str, replacement):
+    def count(self, x):
+        return self.list_.count(x)
+
+    def replace(self, index, replacement):
         del self.list_[index]
         for i in replacement.list_[::-1]:
             self.list_.insert(index, i)
+        self.str = ''.join(self.list_)
+
+    def is_reaction_valid(self, index, replacement):
+        if index >= len(self.list_) or replacement[0] != self.list_[index]:
+            return False
+        else:
+            return True
 
     def __repr__(self):
-        return '-'.join(self.list_)
+        return self.str
 
 
 def part1():
@@ -42,7 +62,6 @@ def part1():
             all_reactions[reagents[0]] = [Molecule(reagents[1])]
         else:
             all_reactions[reagents[0]].append(Molecule(reagents[1]))
-    print(all_reactions)
     all_options = set()
     for i in range(len(starting_molecule)):
         if starting_molecule[i] in all_reactions:
@@ -53,9 +72,18 @@ def part1():
     return len(all_options)
 
 
+def part2():
+    # https://www.reddit.com/r/adventofcode/comments/3xflz8/day_19_solutions/cy4etju?utm_source=share&utm_medium=web2x
+    all_reactions = []
+    with open('day19input') as input_file:
+        lines = input_file.read().splitlines()
+    reactions = lines[:-2]
+    end_molecule = Molecule(lines[-1])
+
+    end_molecule_len = len(end_molecule)
+    return end_molecule_len - (end_molecule.count('Rn') + end_molecule.count('Ar')) - 2 * end_molecule.count('Y') - 1
+
+
 if __name__ == "__main__":
     print(part1())
-    # mol = get_molecule('HOH')
-    # print(mol)
-    # replace_in_molecule(mol, 0, get_molecule('HO'))
-    # print(mol)
+    print(part2())
