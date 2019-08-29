@@ -183,6 +183,9 @@ class FightSimulation:
         return SPELLS[spell_num]
 
     def player_turn(self):
+        # Remove this line for part 1
+        self.hit_player(1)
+
         spell = self.get_next_spell()
 
         if self.verbose:
