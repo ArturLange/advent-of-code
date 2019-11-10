@@ -1,62 +1,80 @@
-import re
-from collections import deque
-from typing import List, Union
+
+def is_prime(number: int):
+    if number < 2:
+        return False
+    for i in range(2, int(number ** 0.5)+1):
+        if number % i == 0:
+            return False
+    return True
 
 
-class Execution:
-    def __init__(self, operations: List[str]):
-        self.operations = operations
-        self.sounds = {x: 0 for x in 'abcdefgh'}
-        self.set_re = re.compile(r'set (?P<sound>[a-z]) (?P<value>-?[a-z0-9]+)')
-        self.sub_re = re.compile(r'sub (?P<sound>[a-z]) (?P<value>-?[a-z0-9]+)')
-        self.mul_re = re.compile(r'mul (?P<sound>[a-z]) (?P<value>-?[a-z0-9]+)')
-        self.jnz_re = re.compile(r'jnz (?P<sound>[a-z0-9]) (?P<value>-?[a-z0-9]+)')
-        self.mul_counter = 0
+class Execution_v2:
+    a, b, c, d, e, f, g, h = 1, 6700, 67, 0, 0, 0, 0, 0
 
-    def get_value(self, value):
-        try:
-            return int(value)
-        except ValueError:
-            return self.sounds[value]
+    def __str__(self):
+        return f'a:{self.a}, b:{self.b}, c:{self.c}, d:{self.d}, e:{self.e}, f:{self.f}, g:{self.g}, h:{self.h}, '
+
+    def block1(self):
+        # mutates [g, f, e]
+        # uses [d, e, b]
+        self.g = self.d * self.e - self.b
+        if self.g == 0:
+            self.f = 0
+        self.e += 1
+        self.g = self.e - self.b
+        print(f'BLOCK 1, {str(self)}')
+
+    def block1_imp(self):
+        while self.e != self.b:
+            if self.d * self.e == self.b:
+                self.f = 0
+            self.e += 1
+            # print(f'BLOCK 1 IMP, {str(self)}')
+        self.g = 0
+
+    def block2(self):
+        self.e = 2
+
+        self.block1_imp()
+
+        self.d += 1
+        self.g = self.d - self.b
+        print(f'BLOCK 2, {str(self)}')
+
+    def block2_imp(self):
+        while self.d != self.b:
+            self.e = 2
+            self.block1_imp()
+            self.d += 1
+            print(f'BLOCK 2 IMP, {str(self)}')
+        self.g = 0
+
+    def block2_imp2(self):
+        if not is_prime(self.b):
+            self.f = 0
+
+    def block3(self):
+        self.f = 1
+        self.d = 2
+
+        self.block2_imp2()
+
+        if self.f == 0:
+            self.h += 1
+        if self.b == self.c:
+            return self.h
+        self.b += 17
 
     def execute(self):
-        i = 0
-        while i < len(self.operations):
-            operation = self.operations[i]
-            if self.set_re.fullmatch(operation):
-                match = self.set_re.fullmatch(
-                    operation)
-                sound: str = match.group('sound')
-                value: Union[str, int] = match.group('value')
-                self.sounds[sound] = self.get_value(value)
-            elif self.sub_re.fullmatch(operation):
-                match = self.sub_re.fullmatch(
-                    operation)
-                sound = match.group('sound')
-                value = match.group('value')
-                self.sounds[sound] -= self.get_value(value)
-            elif self.mul_re.fullmatch(operation):
-                match = self.mul_re.fullmatch(
-                    operation)
-                sound = match.group('sound')
-                value = match.group('value')
-                self.sounds[sound] *= self.get_value(value)
-                self.mul_counter += 1
-            elif self.jnz_re.fullmatch(operation):
-                match = self.jnz_re.fullmatch(
-                    operation)
-                sound = match.group('sound')
-                value = match.group('value')
-                if self.get_value(sound) != 0:
-                    i += self.get_value(value)
-                    i -= 1
-            i += 1
+        self.b += 100000
+        self.c = self.b + 17000
+        while True:
+            h = self.block3()
+            if h:
+                return h
 
 
 if __name__ == '__main__':
-    with open('inputs/day23', 'r') as input_file:
-        operations = input_file.readlines()
-        operations = [operation.replace('\n', '') for operation in operations]
-        execution = Execution(operations)
-        execution.execute()
-        print(execution.mul_counter)
+    import profile
+    ex = Execution_v2()
+    print(ex.execute())
