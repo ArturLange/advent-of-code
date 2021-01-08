@@ -9,7 +9,6 @@ def spinlock(jump=PUZZLE_INPUT, limit=2017, get_value_after=2017):
         values.insert(position + 1, i)
         position += 1
     index = values.index(get_value_after)
-    print(values[index - 3: index + 4])
     return values[index + 1]
 
 

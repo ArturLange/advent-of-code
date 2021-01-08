@@ -1,6 +1,7 @@
 from time import time
 
 from matplotlib import pyplot as plt
+from sympy.ntheory.factor_ import divisors
 
 
 def get_divisors(number: int):
@@ -25,10 +26,12 @@ def get_divisors2(number: int):
 
 
 def get_presents_number(house_num: int):
-    return 10 * sum(get_divisors(house_num))
+    return 10 * sum(divisors(house_num, generator=True))
+
 
 def get_presents_number2(house_num: int):
     return 11 * sum(get_divisors2(house_num))
+
 
 def part1():
     presents_number = 10
@@ -36,10 +39,11 @@ def part1():
     while presents_number < 36000000:
         house_num += 1
         presents_number = get_presents_number(house_num)
-        if house_num % 1000 == 0:
-            print(house_num, presents_number)
+        # if house_num % 1000 == 0:
+        #     print(house_num, presents_number)
 
     return house_num
+
 
 def part2():
     presents_number = 10
@@ -54,5 +58,5 @@ def part2():
 
 
 if __name__ == "__main__":
-    # print(part1())
-    print(part2())
+    print(part1())
+    # print(part2())

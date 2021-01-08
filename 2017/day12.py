@@ -21,7 +21,7 @@ class Graph:
 
     def initialize_graph(self):
         self.initialize_nodes()
-        for _ in range(1):
+        for i in range(len(self.pid_list)):
             node = self.nodes_and_vertices[i]
             for j in range(len(node)):
                 if node[j] == 1:
@@ -47,6 +47,18 @@ class Graph:
     def count_connections(self, pid):
         return self.nodes_and_vertices[pid].count(1)
 
+    def create_groups(self):
+        groups = []
+        groups_number = 0
+        for i in range(len(self.nodes_and_vertices)):
+            if len(groups) >= 2000:
+                break
+            if i not in groups:
+                node = self.nodes_and_vertices[i]
+                groups.extend([i for i in range(len(node)) if node[i] == 1])
+                groups_number += 1
+        return groups_number
+
 
 if __name__ == '__main__':
     with open('inputs/day12', 'r') as input_file:
@@ -55,3 +67,4 @@ if __name__ == '__main__':
         graph.initialize_graph()
         graph.initialize_nodes()
         print(graph.count_connections(0))
+        print(graph.create_groups() - 2000)
