@@ -1,3 +1,8 @@
+
+with open('day7input') as input_file:
+    input_lines = [line.replace('\n', '') for line in input_file.readlines()]
+
+
 def is_abba(input_: str) -> bool:
     if len(input_) != 4:
         raise IndexError('ABBA string must have length 4')
@@ -32,7 +37,7 @@ def ip_supports_ssl(input_: str) -> bool:
     if not abas:
         return False
     for string_ in ip_address[1::2]:
-        for i in range(len(string_) - 3):
+        for i in range(len(string_) - 2):
             bab = string_[i:i+3]
             if bab == bab[::-1]:
                 aba = bab[1:] + bab[1]
@@ -41,36 +46,47 @@ def ip_supports_ssl(input_: str) -> bool:
     return False
 
 
-test_lines = [
-    'ioxxoj[asdfgh]zxcvbn',
-    'abcd[bddb]xyyx',
-    'aaaa[qwer]tyui',
-    'ioxxoj[asdfgh]zxcvbn',
+test_lines_1 = [
+    ('abba[mnop]qrst', True),
+    ('abcd[bddb]xyyx', False),
+    ('aaaa[qwer]tyui', False),
+    ('ioxxoj[asdfgh]zxcvbn', True),
+]
+
+test_lines_2 = [
+    ('aba[bab]xyz', True),
+    ('xyx[xyx]xyx', False),
+    ('aaa[kek]eke', True),
+    ('zazbz[bzb]cdb', True),
 ]
 
 
 def part1() -> int:
     count = 0
-    with open('day7input') as input_file:
-        for line in input_file.readlines():
-            ip_address = line.replace(
-                '\n', '')
-            if ip_supports_tls(ip_address):
-                count += 1
+    for ip_address in input_lines:
+        if ip_supports_tls(ip_address):
+            count += 1
     return count
 
 
 def part2() -> int:
     count = 0
-    with open('day7input') as input_file:
-        for line in input_file.readlines():
-            ip_address = line.replace(
-                '\n', '')
-            if ip_supports_ssl(ip_address):
-                count += 1
+    for ip_address in input_lines:
+        if ip_supports_ssl(ip_address):
+            count += 1
     return count
+
+def test_1():
+    for input_, expected_result in test_lines_1:
+        assert ip_supports_tls(input_) == expected_result
+
+def test_2():
+    for input_, expected_result in test_lines_2:
+        assert ip_supports_ssl(input_) == expected_result
 
 
 if __name__ == '__main__':
+    test_1()
+    test_2()
     print(part1())
     print(part2())
